@@ -1,3 +1,7 @@
+
+import java.awt.event.ItemEvent;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -63,6 +67,12 @@ public class apkPerhitunganDiskon extends javax.swing.JFrame {
             }
         });
 
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider1StateChanged(evt);
+            }
+        });
+
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField3ActionPerformed(evt);
@@ -72,12 +82,27 @@ public class apkPerhitunganDiskon extends javax.swing.JFrame {
         jLabel6.setText("Hasil hitung diskon");
 
         jButton1.setText("Hitung");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "5%", "10%", "15%", "20%", "25%", "50%" }));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -197,6 +222,71 @@ public class apkPerhitunganDiskon extends javax.swing.JFrame {
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            double hargaAsli = Double.parseDouble(jTextField1.getText());
+            int persentaseDiskon = jSlider1.getValue();
+            double jumlahDiskon = hargaAsli * persentaseDiskon / 100.0;
+            double hargaSetelahDiskon = hargaAsli - jumlahDiskon;
+
+            String kodeKupon = jTextField2.getText().trim();
+            double diskonTambahan = 0.0;
+            if (kodeKupon.equals("10")) {
+                diskonTambahan = hargaSetelahDiskon * 0.10;
+                hargaSetelahDiskon -= diskonTambahan;
+            } else if (!kodeKupon.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Kode kupon tidak valid.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            }
+
+            jTextField3.setText(String.format("Rp %.2f", hargaSetelahDiskon));
+            jTextField4.setText(String.format("Rp %.2f", jumlahDiskon + diskonTambahan));
+
+            String hasil = String.format("Harga Asli: Rp %.2f, Diskon: %d%%, Harga Akhir: Rp %.2f, Penghematan: Rp %.2f%s",
+                    hargaAsli, persentaseDiskon, hargaSetelahDiskon, jumlahDiskon + diskonTambahan,
+                    (diskonTambahan > 0 ? " (dengan 10 kupon)" : ""));
+            jTextArea1.append(hasil + "\n");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Masukkan angka yang valid!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        // TODO add your handling code here:
+         int value = jSlider1.getValue();
+         jComboBox1.setSelectedItem(value + "%");
+    }//GEN-LAST:event_jSlider1StateChanged
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        // TODO add your handling code here:
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+        try {
+            // Get the selected item from JComboBox, remove "%" symbol and trim spaces
+            String selectedItem = jComboBox1.getSelectedItem().toString().replace("%", "").trim();
+            
+            // Parse the trimmed string to an integer
+            int selectedValue = Integer.parseInt(selectedItem);
+
+            // Update JSlider only if the value is different
+            if (jSlider1.getValue() != selectedValue) {
+                jSlider1.setValue(selectedValue);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number format: " + e.getMessage());
+            // Optionally, show an error message to the user
+            JOptionPane.showMessageDialog(this, "Invalid input in JComboBox. Please enter a valid number.", 
+                                          "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        int selectedDiskon = Integer.parseInt(jComboBox1.getSelectedItem().toString().replace("%", ""));
+        jSlider1.setValue(selectedDiskon);
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -119,4 +119,4 @@ Ahmad Dzul Fauzil Azhim - 2210010389
 
 ## Demo
 
-
+![App Screenshot](https://github.com/AhmadDzulFauzilAzhim/apkPerhitunganDiskon/blob/main/img/demo%20aplikasi%20perhitungan%20diskon.gif)
